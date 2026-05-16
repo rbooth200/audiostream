@@ -58,17 +58,17 @@ class AudioApp(App):
         lvl = lvr = None
         g = self.gens[x]
         gen_left, gen_right, next_freq_left, next_freq_right = g[1:]
-        while len(buf) < bufsize / 2:
-            vl = int(gen_left.next() * f)
-            vr = int(gen_right.next() * f)
+        while len(buf) < bufsize // 2:
+            vl = int(next(gen_left) * f)
+            vr = int(next(gen_right) * f)
             if next_freq_left and lvl == 0 and vl > 0:
                 g[1] = gen_left = sine_wave(frequency=next_freq_left)
                 g[3] = next_freq_left = None
-                vl = int(gen_left.next() * f)
+                vl = int(next(gen_left) * f)
             if next_freq_right and lvr == 0 and vr > 0:
                 g[2] = gen_right = sine_wave(frequency=next_freq_right)
                 g[4] = next_freq_right = None
-                vr = int(gen_right.next() * f)
+                vr = int(next(gen_right) * f)
             lvl = vl
             lvr = vr
             buf.append(vl)

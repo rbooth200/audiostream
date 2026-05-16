@@ -2,8 +2,7 @@ import sys
 import os
 from os.path import join, dirname
 from os import environ
-from distutils.core import setup
-from distutils.extension import Extension
+from setuptools import setup, Extension
 
 # detect Python for android project (http://github.com/kivy/python-for-android)
 # or kivy-ios (http://github.com/kivy/kivy-ios)
@@ -109,6 +108,7 @@ setup(
     url='http://txzone.net/',
     license='LGPL',
     description='An audio library designed to let the user stream to speakers',
+    install_requires=[],
     ext_modules=extensions,
     cmdclass=cmdclass,
 )

@@ -35,7 +35,7 @@ class AudioException(Exception):
     pass
 
 
-cdef void audio_callback(int chan, void *stream, int l, void *userdata) nogil:
+cdef void audio_callback(int chan, void *stream, int l, void *userdata) noexcept nogil:
     cdef RingBuffer *rb = <RingBuffer *>userdata
     cdef int datasize
 
@@ -82,7 +82,7 @@ cdef class AudioSample:
         self.raw_chunk = Mix_QuickLoad_RAW(silence, l)
         if self.raw_chunk == NULL:
             raise AudioException('AudioSample: unable to load silence')
-        print 'alloc', self.channel
+        print('alloc', self.channel)
 
     cdef void registereffect(self) with gil:
         with nogil:
@@ -100,7 +100,7 @@ cdef class AudioSample:
             ret = Mix_PlayChannel(self.channel, self.raw_chunk, -1)
 
         if ret == -1:
-            print 'error', <bytes>Mix_GetError()
+            print('error', <bytes>Mix_GetError())
 
     def stop(self):
         '''Stop the playback.
@@ -162,20 +162,20 @@ cdef class AudioOutput:
         PyEval_InitThreads()
 
         if SDL_Init(SDL_INIT_AUDIO) < 0:
-            print 'SDL_Init: %s' % SDL_GetError()
+            print('SDL_Init: %s' % SDL_GetError())
             return -1
 
         cdef unsigned int encoding = AUDIO_S8 if self.encoding == 8 else AUDIO_S16SYS
         if Mix_OpenAudio(self.rate, encoding, self.channels, self.buffersize):
-            print 'Mix_OpenAudio: %s' % SDL_GetError()
+            print('Mix_OpenAudio: %s' % SDL_GetError())
             return -1
 
         memset(self.mix_channels_usage, 0, sizeof(int) * MIX_CHANNELS_MAX)
 
         SDL_LockAudio()
-        print 'AudioOutput ask for', self.rate, self.channels
+        print('AudioOutput ask for', self.rate, self.channels)
         Mix_QuerySpec(&self.rate, NULL, &self.channels)
-        print 'AudioOutput got', self.rate, self.channels
+        print('AudioOutput got', self.rate, self.channels)
         Mix_AllocateChannels(MIX_CHANNELS_MAX)
         SDL_UnlockAudio()
 
@@ -184,7 +184,7 @@ cdef class AudioOutput:
 
     cdef int alloc_channel(self):
         cdef int i
-        for i in xrange(MIX_CHANNELS_MAX):
+        for i in range(MIX_CHANNELS_MAX):
            if self.mix_channels_usage[i] == 0:
                self.mix_channels_usage[i] = 1
                return i
