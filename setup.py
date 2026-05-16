@@ -29,7 +29,7 @@ else:
         raise
 
 # configure the env
-use_sdl2 = environ.get('USE_SDL2')
+use_sdl2 = environ.get('USE_SDL2', '1')
 if use_sdl2:
     include_dirs = []
     sdl_include_dir = environ.get('SDL2_INCLUDE_DIR')
